@@ -1,5 +1,6 @@
 require('dotenv').config();
-console.log('MONGO_URI:', process.env.MONGO_URI);
+process.env.MONGODB_URI && console.log('MONGO_URI:', process.env.MONGODB_URI);
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -12,14 +13,14 @@ const app = express();
 
 connectDB();
 
-app.use(helmet()); 
-app.use(xss()); 
+app.use(helmet());
+app.use(xss());
 app.use(cors());
 app.use(express.json());
 
 const loginLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, 
-    max: 5, 
+    windowMs: 1 * 60 * 1000,
+    max: 5,
     message: {
         success: false,
         message: 'Too many login attempts, please try again after 1 minute'
