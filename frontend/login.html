@@ -67,7 +67,6 @@
     </div>
 
     <script>
-    // API Base URL - Change this if your backend is on different port/host
     const API_URL = 'http://localhost:3000/api';
 
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -89,7 +88,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ 
-                    email: id,  // Send ID as email (or change backend to accept studentId)
+                    email: id,  
                     password: password 
                 })
             });
@@ -101,11 +100,9 @@
                 return;
             }
 
-            // Save token and user info
             localStorage.setItem('token', data.token);
             localStorage.setItem('currentUser', JSON.stringify(data.user));
 
-            // Redirect based on role
             if (data.user.role === 'student') {
                 window.location.href = 'student-dashboard.html';
             } else if (data.user.role === 'teacher') {

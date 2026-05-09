@@ -1,7 +1,6 @@
 const API_URL = 'http://localhost:3000/api';
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Redirect if already logged in
   const token = localStorage.getItem('token');
   const user = localStorage.getItem('currentUser');
   if (token && user) {
@@ -34,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    // Show loading state
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Logging in...';
@@ -69,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
       alert('✅ Login successful!');
 
-      // Fixed redirect paths (no spaces)
       if (data.user.role === 'student') {
         window.location.href = 'student-dashboard.html';
       } else if (data.user.role === 'teacher') {

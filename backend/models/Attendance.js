@@ -4,12 +4,12 @@ const attendanceSchema = new mongoose.Schema({
   studentId: {
     type: String,
     required: true,
-    index: true  // Index for faster queries
+    index: true 
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: false  // Optional reference to User model
+    required: false 
   },
   timeIn: {
     type: Date,
@@ -23,7 +23,7 @@ const attendanceSchema = new mongoose.Schema({
   },
   subject: {
     type: String,
-    default: 'General'  // For future class/subject tracking
+    default: 'General' 
   },
   notes: {
     type: String,
@@ -31,7 +31,6 @@ const attendanceSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// Compound index for efficient querying
 attendanceSchema.index({ studentId: 1, timeIn: -1 });
 
 module.exports = mongoose.model('Attendance', attendanceSchema);

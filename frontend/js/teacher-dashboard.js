@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Auth check
   const token = localStorage.getItem('token');
   const user = localStorage.getItem('currentUser');
 
@@ -15,17 +14,14 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
-  // Display user info
   document.getElementById('teacherName').textContent = userData.username || 'Teacher';
 
-  // Setup logout
   document.getElementById('logoutBtn')?.addEventListener('click', function() {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     window.location.href = 'login.html';
   });
 
-  // Load all attendance records
   async function loadAttendance() {
     const tableBody = document.getElementById('attendanceTableBody');
     if (!tableBody) return;
@@ -83,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Load stats
   async function loadStats() {
     try {
       const response = await fetch('http://localhost:3000/api/attendance/stats', {
@@ -106,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Search functionality
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('input', function() {
@@ -120,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Filter by status
   const statusFilter = document.getElementById('statusFilter');
   if (statusFilter) {
     statusFilter.addEventListener('change', function() {
@@ -137,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // View details modal
   window.viewDetails = async function(id) {
     try {
       const response = await fetch(`http://localhost:3000/api/attendance/${id}`, {
@@ -170,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
-  // Initial load
+  
   loadAttendance();
   loadStats();
 });

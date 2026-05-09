@@ -1,7 +1,6 @@
 const API_URL = 'http://localhost:3000/api';
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Redirect if already logged in
   const token = localStorage.getItem('token');
   const user = localStorage.getItem('currentUser');
   if (token && user) {
@@ -33,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const role = document.getElementById('regRole').value;
     const studentId = document.getElementById('regStudentId').value.trim();
 
-    // Validation
     if (!username || !email || !password || !studentId) {
       alert('Please fill in all required fields!');
       return;
@@ -59,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    // Show loading state
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Registering...';

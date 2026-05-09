@@ -23,7 +23,6 @@ const API_CONFIG = {
       const data = await response.json();
 
       if (!response.ok) {
-        // Handle token expiration
         if (response.status === 401) {
           localStorage.removeItem('token');
           localStorage.removeItem('currentUser');

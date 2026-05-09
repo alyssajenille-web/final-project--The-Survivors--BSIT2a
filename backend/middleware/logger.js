@@ -6,7 +6,6 @@ const logger = (req, res, next) => {
 
   console.log(`[${timestamp}] ${method} ${url} - IP: ${ip}`);
 
-  // Log response time
   const start = Date.now();
   res.on('finish', () => {
     const duration = Date.now() - start;

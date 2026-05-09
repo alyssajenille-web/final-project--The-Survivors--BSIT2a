@@ -12,7 +12,6 @@ const seedData = async () => {
 
     console.log('⚠️  Note: Skipping data clear due to Atlas permissions');
     
-    // Check if demo users already exist
     const existingAdmin = await User.findOne({ email: 'admin@school.edu' });
     if (existingAdmin) {
       console.log('✅ Demo data already exists. Skipping seed.');
@@ -23,7 +22,6 @@ const seedData = async () => {
       process.exit(0);
     }
 
-    // Create demo users
     const hashedPassword = await bcrypt.hash('Password123', 10);
 
     const users = [
@@ -67,7 +65,6 @@ const seedData = async () => {
     const createdUsers = await User.insertMany(users);
     console.log(`✅ Created ${createdUsers.length} users`);
 
-    // Create demo attendance records
     const today = new Date();
     const attendanceRecords = [];
 

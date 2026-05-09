@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Auth check
+  
   const token = localStorage.getItem('token');
   const user = localStorage.getItem('currentUser');
 
@@ -15,18 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
-  // Display user info
   document.getElementById('studentName').textContent = userData.username || 'Student';
   document.getElementById('studentId').textContent = userData.studentId || 'N/A';
 
-  // Setup logout
   document.getElementById('logoutBtn')?.addEventListener('click', function() {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     window.location.href = 'login.html';
   });
 
-  // Check-in handler
   const checkinForm = document.getElementById('checkinForm');
   if (checkinForm) {
     checkinForm.addEventListener('submit', async function(e) {
@@ -61,8 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         alert(`✅ Check-in successful! Status: ${data.data.status}`);
-        loadAttendanceHistory();  // Refresh history
-
+        loadAttendanceHistory();  
       } catch (error) {
         console.error('Check-in error:', error);
         alert('❌ Cannot connect to server.');
@@ -125,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Load stats
   async function loadStats() {
     try {
       const response = await fetch('http://localhost:3000/api/attendance/my-attendance', {
@@ -161,7 +156,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Initial load
   loadAttendanceHistory();
   loadStats();
 });

@@ -6,7 +6,6 @@ const classifyTime = (time) => {
   const hour = new Date(time).getHours();
   const minute = new Date(time).getMinutes();
 
-  // More precise classification
   if (hour < 8) return 'Early';
   if (hour === 8 && minute <= 30) return 'On-Time';  // Grace period until 8:30
   if (hour === 8 && minute > 30 || hour === 9) return 'Late';
@@ -17,7 +16,6 @@ exports.checkIn = async (req, res) => {
   try {
     const { studentId, subject, notes } = req.body;
 
-    // Verify student exists
     const student = await User.findOne({ studentId });
     if (!student) {
       return res.status(404).json({ success: false, message: 'Student ID not found' });
@@ -37,7 +35,6 @@ exports.checkIn = async (req, res) => {
 
     await record.save();
 
-    // Clear related caches
     cache.del('attendance_all');
     cache.del(`attendance_student_${studentId}`);
 
@@ -171,7 +168,6 @@ exports.getStats = async (req, res) => {
       }
     ]);
 
-    // Format stats with defaults for missing statuses
     const statusCounts = {
       Early: 0,
       'On-Time': 0,
