@@ -1,10 +1,19 @@
-exports.logger = (req, res, next) => {
-    const start = Date.now();
+const logger = (req, res, next) => {
+  const timestamp = new Date().toISOString();
+  const method = req.method;
+  const url = req.originalUrl;
+  const ip = req.ip || req.connection.remoteAddress;
 
-    res.on('finish', () => {
-        const duration = Date.now() - start;
-        console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${duration}ms`);
-    });
+  console.log(`[${timestamp}] ${method} ${url} - IP: ${ip}`);
 
-    next();
+  // Log response time
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`[${timestamp}] ${method} ${url} - ${res.statusCode} - ${duration}ms`);
+  });
+
+  next();
 };
+
+module.exports = { logger };

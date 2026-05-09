@@ -1,14 +1,19 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
+  "name": "smart-attendance-backend",
+  "version": "1.1.0",
   "description": "Smart Attendance System Backend API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "seed": "node scripts/seed.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "attendance",
+    "education",
+    "api"
+  ],
+  "author": "The Survivors - BSIT2A",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
@@ -16,6 +21,7 @@
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.19.2",
+    "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.3.1",
     "express-validator": "^7.1.0",
     "helmet": "^7.1.0",

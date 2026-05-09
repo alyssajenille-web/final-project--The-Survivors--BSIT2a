@@ -1,29 +1,47 @@
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:3000/api',
-    
-    async apiCall(endpoint, method = 'GET', body = null, token = null) {
-        const options = {
-            method,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        
-        if (token) {
-            options.headers['Authorization'] = `Bearer ${token}`;
-        }
-        
-        if (body) {
-            options.body = JSON.stringify(body);
-        }
-        
-        const response = await fetch(`${this.BASE_URL}${endpoint}`, options);
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.message || 'API request failed');
-        }
-        
-        return data;
+  BASE_URL: 'http://localhost:3000/api',
+
+  async apiCall(endpoint, method = 'GET', body = null, token = null) {
+    const url = `${this.BASE_URL}${endpoint}`;
+    const options = {
+      method,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    if (token) {
+      options.headers['Authorization'] = `Bearer ${token}`;
     }
+
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
+
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle token expiration
+        if (response.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('currentUser');
+          window.location.href = 'login.html';
+          throw new Error('Session expired. Please login again.');
+        }
+        throw new Error(data.message || 'API request failed');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  }
 };
+
+// Export for use in other files
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = API_CONFIG;
+}
