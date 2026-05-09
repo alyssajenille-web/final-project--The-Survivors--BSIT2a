@@ -127,11 +127,7 @@
     <script>
         const API_URL = 'http://localhost:3000/api';
         
-        const token = localStorage.getItem('token');
-        if (!token) {
-            alert('Please login first');
-            window.location.href = 'login.html';
-        }
+        
 
         async function loadAttendanceData() {
             try {

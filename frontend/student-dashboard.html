@@ -80,8 +80,7 @@
 
     <script>
         const API_URL = 'http://localhost:3000/api';
-        const token = localStorage.getItem('token');
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        
 
         if (!token || !currentUser) {
             alert('Please login first');
