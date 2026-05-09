@@ -82,10 +82,7 @@
         const API_URL = 'http://localhost:3000/api';
         
 
-        if (!token || !currentUser) {
-            alert('Please login first');
-            window.location.href = 'login.html';
-        }
+       
 
         document.getElementById('studentName').textContent = currentUser?.username || 'Student';
         document.getElementById('studentId').textContent = currentUser?.studentId || currentUser?.id || '---';
