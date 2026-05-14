@@ -61,27 +61,32 @@ It includes:
 ## Screenshots
 
 ### Landing Page
+
 <p align="center">
   <img src="docs/lab11/landing-page.png" alt="Landing Page" width="800">
 </p>
 
 ### Authentication
+
 <p align="center">
   <img src="docs/lab11/login.png" alt="Login Page" width="400">
   <img src="docs/lab11/register.png" alt="Register Page" width="400">
 </p>
 
 ### Student Dashboard
+
 <p align="center">
   <img src="docs/lab11/student-dashboard.png" alt="Student Dashboard" width="800">
 </p>
 
 ### Teacher Dashboard
+
 <p align="center">
   <img src="docs/lab11/teacher-dashboard.png" alt="Teacher Dashboard" width="800">
 </p>
 
 ### Admin Dashboard
+
 <p align="center">
   <img src="docs/lab11/admin-dashboard.png" alt="Admin Dashboard" width="800">
 </p>
