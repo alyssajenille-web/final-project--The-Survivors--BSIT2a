@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,21 +12,10 @@
             background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
             min-height: 100vh;
         }
-        .register-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border: none;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        .brand-title {
-            background: linear-gradient(90deg, #6366f1, #ec4899);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
     </style>
-<base target="_blank">
+    <!-- FIX: Removed <base target="_blank"> -->
 </head>
+
 <body>
     <div class="container py-5">
         <div class="row justify-content-center">
@@ -44,11 +34,11 @@
                                 <input type="text" id="regName" class="form-control" required>
                             </div>
 
-                            <!-- ID Number (Student ID or Teacher ID) -->
+                            <!-- ID Number -->
                             <div class="mb-3">
                                 <label class="form-label fw-medium">ID Number</label>
-                                <input type="text" id="regStudentId" class="form-control" 
-                                       placeholder="2020-0000-00000 to 2026-0000-00000 (Student) or TEACHER01" required>
+                                <input type="text" id="regStudentId" class="form-control"
+                                    placeholder="e.g. 2024-0001-00001 or TEACHER01" required>
                             </div>
 
                             <!-- Email -->
@@ -61,6 +51,7 @@
                             <div class="mb-3">
                                 <label class="form-label fw-medium">Password</label>
                                 <input type="password" id="regPassword" class="form-control" required>
+                                <div class="form-text">Min 6 chars, one uppercase letter, one number.</div>
                             </div>
 
                             <!-- Confirm Password -->
@@ -94,71 +85,8 @@
         </div>
     </div>
 
-    <script>
-        const API_URL = 'http://localhost:3000/api';
-
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            // Get all form values
-            const username = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-            const confirmPassword = document.getElementById('regConfirmPassword').value;
-            const role = document.getElementById('regRole').value;
-            const studentId = document.getElementById('regStudentId').value.trim();
-
-            // Validation
-            if (!username || !email || !password || !studentId) {
-                alert("Please fill in all fields!");
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                alert("Passwords don't match!");
-                return;
-            }
-
-            if (password.length < 6) {
-                alert("Password must be at least 6 characters!");
-                return;
-            }
-
-            try {
-                console.log("Sending registration data:", { username, email, role, studentId });
-
-                const response = await fetch(`${API_URL}/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username,
-                        email,
-                        password,
-                        role,
-                        studentId: role === 'student' ? studentId : undefined
-                    })
-                });
-
-                const data = await response.json();
-                console.log("Server response:", data);
-
-                if (!response.ok) {
-                    alert(data.message || "Registration failed");
-                    return;
-                }
-
-                alert('Registration successful! Please login.');
-                window.location.href = 'login.html';
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Cannot connect to server. Make sure backend is running on port 3000.');
-            }
-        });
-    </script>
     <script src="js/auth.js"></script>
     <script src="js/register.js"></script>
 </body>
+
 </html>

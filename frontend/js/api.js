@@ -1,5 +1,5 @@
 const API_CONFIG = {
-  BASE_URL: 'http://localhost:3000/api',
+  BASE_URL: '/api',
 
   async apiCall(endpoint, method = 'GET', body = null, token = null) {
     const url = `${this.BASE_URL}${endpoint}`;

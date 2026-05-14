@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,21 +12,10 @@
             background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
             min-height: 100vh;
         }
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border: none;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        .brand-title {
-            background: linear-gradient(90deg, #6366f1, #ec4899);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
     </style>
-<base target="_blank">
+    <!-- FIX: Removed <base target="_blank"> which broke all same-tab navigation -->
 </head>
+
 <body>
     <div class="container py-5">
         <div class="row justify-content-center">
@@ -40,8 +30,8 @@
                         <form id="loginForm">
                             <div class="mb-3">
                                 <label class="form-label fw-medium">Email</label>
-                                <input type="email" id="loginEmail" class="form-control form-control-lg" 
-                                         placeholder="your.email@example.com" required>
+                                <input type="email" id="loginEmail" class="form-control form-control-lg"
+                                    placeholder="your.email@example.com" required>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label fw-medium">Password</label>
@@ -66,8 +56,8 @@
             </div>
         </div>
     </div>
-    </script>
     <script src="js/auth.js"></script>
     <script src="js/login.js"></script>
 </body>
+
 </html>

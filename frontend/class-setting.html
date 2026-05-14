@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Settings - Smart Attendance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <h1>⚙️ Smart Attendance - Class Settings</h1>
+        <div class="user-info">
+            <span>Welcome, <strong id="teacherName">Teacher</strong></span>
+            <button id="logoutBtn" class="btn btn-danger">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- Current Schedule Banner -->
+        <div id="currentScheduleBanner" style="display: none;" class="card" style="border-left: 5px solid #27ae60;">
+            <h2>📌 Current Active Schedule</h2>
+            <div id="scheduleInfo" class="stats-grid" style="margin-bottom: 0;"></div>
+        </div>
+
+        <!-- Settings Form -->
+        <div class="card">
+            <h2>📅 Set Class Schedule</h2>
+            <p class="text-muted" style="margin-bottom: 1.5rem;">
+                This schedule will be used to automatically classify student attendance as Early, On-Time, Late, or
+                Absent.
+            </p>
+
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label for="className">Subject / Class Name</label>
+                    <input type="text" id="className" placeholder="e.g. Mathematics - Grade 10" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="startTime">Class Start Time</label>
+                    <input type="time" id="startTime" required>
+                    <small class="text-muted">This is the official time the class begins.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="allowanceTime">Late Allowance (Minutes)</label>
+                    <input type="number" id="allowanceTime" min="0" max="30" value="5" required>
+                    <small class="text-muted">
+                        Minutes after start time still considered "On-Time". Students arriving after this are marked
+                        Late.
+                        After 60 minutes from start, they are marked Absent.
+                    </small>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary">💾 Save Schedule</button>
+                    <a href="teacher-dashboard.html" class="btn btn-warning">← Back to Dashboard</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Classification Preview -->
+        <div class="card">
+            <h2>📊 Classification Preview</h2>
+            <p class="text-muted" style="margin-bottom: 1rem;">Based on your settings, here is how attendance will be
+                classified:</p>
+            <div class="stats-grid" id="previewGrid">
+                <div class="stat-card early">
+                    <h3>🟢 Early</h3>
+                    <div class="number" style="font-size: 1rem;" id="previewEarly">Before --:--</div>
+                </div>
+                <div class="stat-card ontime">
+                    <h3>🔵 On-Time</h3>
+                    <div class="number" style="font-size: 1rem;" id="previewOnTime">--:-- to --:--</div>
+                </div>
+                <div class="stat-card late">
+                    <h3>🟡 Late</h3>
+                    <div class="number" style="font-size: 1rem;" id="previewLate">--:-- to --:--</div>
+                </div>
+                <div class="stat-card absent">
+                    <h3>🔴 Absent</h3>
+                    <div class="number" style="font-size: 1rem;" id="previewAbsent">After --:--</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+        if (!token || !['teacher', 'admin'].includes(user.role)) {
+            alert('Access denied. Teachers only.');
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('teacherName').textContent = user.username || 'Teacher';
+
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            localStorage.removeItem('token');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
+
+        function formatTime(hhmm) {
+            if (!hhmm) return '--:--';
+            const [h, m] = hhmm.split(':').map(Number);
+            const period = h >= 12 ? 'PM' : 'AM';
+            const hour = h % 12 || 12;
+            return `${hour}:${String(m).padStart(2, '0')} ${period}`;
+        }
+
+        function addMinutes(hhmm, mins) {
+            if (!hhmm) return '--:--';
+            const [h, m] = hhmm.split(':').map(Number);
+            const total = h * 60 + m + mins;
+            const newH = Math.floor(total / 60) % 24;
+            const newM = total % 60;
+            return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+        }
+
+        function updatePreview() {
+            const startTime = document.getElementById('startTime').value;
+            const allowance = parseInt(document.getElementById('allowanceTime').value) || 5;
+
+            if (!startTime) return;
+
+            const onTimeEnd = addMinutes(startTime, allowance);
+            const absentStart = addMinutes(startTime, 60);
+
+            document.getElementById('previewEarly').textContent = `Before ${formatTime(startTime)}`;
+            document.getElementById('previewOnTime').textContent = `${formatTime(startTime)} – ${formatTime(onTimeEnd)}`;
+            document.getElementById('previewLate').textContent = `${formatTime(onTimeEnd)} – ${formatTime(absentStart)}`;
+            document.getElementById('previewAbsent').textContent = `After ${formatTime(absentStart)}`;
+        }
+
+        document.getElementById('startTime').addEventListener('input', updatePreview);
+        document.getElementById('allowanceTime').addEventListener('input', updatePreview);
+
+        async function loadSchedule() {
+            try {
+                const response = await fetch(`${API_URL}/schedule`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.data) {
+                    const s = data.data;
+                    document.getElementById('className').value = s.className || '';
+                    document.getElementById('startTime').value = s.startTime || '';
+                    document.getElementById('allowanceTime').value = s.allowanceMinutes ?? 5;
+
+                    const onTimeEnd = addMinutes(s.startTime, s.allowanceMinutes ?? 5);
+                    const absentStart = addMinutes(s.startTime, 60);
+
+                    const banner = document.getElementById('currentScheduleBanner');
+                    banner.style.display = 'block';
+                    document.getElementById('scheduleInfo').innerHTML = `
+                        <div class="stat-card">
+                            <h3>Class</h3>
+                            <div class="number" style="font-size: 1.1rem;">${s.className}</div>
+                        </div>
+                        <div class="stat-card ontime">
+                            <h3>Start Time</h3>
+                            <div class="number" style="font-size: 1.1rem;">${formatTime(s.startTime)}</div>
+                        </div>
+                        <div class="stat-card late">
+                            <h3>On-Time Until</h3>
+                            <div class="number" style="font-size: 1.1rem;">${formatTime(onTimeEnd)}</div>
+                        </div>
+                        <div class="stat-card absent">
+                            <h3>Absent After</h3>
+                            <div class="number" style="font-size: 1.1rem;">${formatTime(absentStart)}</div>
+                        </div>
+                    `;
+
+                    updatePreview();
+                }
+            } catch (error) {
+                console.error('Error loading schedule:', error);
+            }
+        }
+
+        document.getElementById('scheduleForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const className = document.getElementById('className').value.trim();
+            const startTime = document.getElementById('startTime').value;
+            const allowanceMinutes = parseInt(document.getElementById('allowanceTime').value);
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Saving...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_URL}/schedule`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ className, startTime, allowanceMinutes })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('✅ Class schedule saved successfully! Attendance classification will now use these settings.');
+                    window.location.href = 'teacher-dashboard.html';
+                } else {
+                    alert(data.message || 'Failed to save schedule');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Cannot connect to server. Make sure the backend is running.');
+            } finally {
+                submitBtn.textContent = '💾 Save Schedule';
+                submitBtn.disabled = false;
+            }
+        });
+
+        loadSchedule();
+    </script>
+</body>
+
+</html>

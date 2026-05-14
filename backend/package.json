@@ -28,29 +28,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^7.2.0",
     "mongoose": "^9.6.1",
-    "node-cache": "^5.1.2",
-    "xss-clean": "^0.1.4"
+    "node-cache": "^5.1.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-  },
-  "success": true,
-  "data": [
-    {
-      "studentId": "2026-1234-56789",
-      "studentName": "John Doe",
-      "email": "john@example.com",
-      "Early": 8,
-      "On-Time": 15,
-      "Late": 1,
-      "Absent": 1,
-      "total": 25,
-      "percentages": {
-        "Early": 32.0,
-        "On-Time": 60.0,
-        "Late": 4.0,
-        "Absent": 4.0
-      }
-    }
-  ]
+  }
 }
