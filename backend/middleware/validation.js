@@ -43,8 +43,9 @@ exports.loginValidation = [
 
 exports.checkInValidation = [
     body('studentId')
+        .optional()
         .trim()
-        .notEmpty().withMessage('Student ID is required')
+        .notEmpty().withMessage('Student ID cannot be empty')
 ];
 
 exports.handleValidationErrors = (req, res, next) => {

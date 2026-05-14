@@ -7,85 +7,120 @@
 
 ---
 
-
-
-## Live Deployment URL
-[Click here to access the system]()  
-<!-- URL:  -->
-
----
-
 ## Project Overview
-In many educational institutions, attendance tracking is still done manually, leading to errors, time consumption, and inaccurate records. The **Smart Attendance System** is a web-based platform designed to automate this process. By utilizing real-time tracking and automated classification, the system provides a faster, more reliable, and user-friendly way of managing classroom attendance.
+The Smart Attendance System is a complete web application for schools and training centers that automates attendance tracking with time-based classification and role-based dashboards.
+
+It includes:
+* Multi-role authentication for students, teachers, and admins.
+* Student check-in workflows with class/session-aware attendance.
+* Teacher and admin dashboards for attendance monitoring and summaries.
+* Class roster, class schedule, and session management.
+* Real-time attendance status updates backed by MongoDB.
 
 ---
 
-## Meet the Team & Contributions
-Our team consists of dedicated members handling specialized roles to ensure the project's success. Below are the individual contributions of each member:
+## Implemented Features
 
-| Name | Role | Key Contributions |
-| :--- | :--- | :--- |
-| **Jexson Sedon** | Project Manager | Oversees overall project planning, timeline management, task distribution, and ensures all goals are met on schedule. |
-| **John Roan Ballester** | Backend Manager | Throughout the development of our system, he is very hardworking — responsible for building the server-side logic, developing APIs, handling data processing, and ensuring all system functions work smoothly. |
-| **Judy Pearl Balictar** | Frontend Manager | Designed and developed the entire user interface; created responsive, user-friendly pages including check-in forms, dashboard, and records table; ensured the layout is clean, intuitive, and works well on different devices. |
-| **Michelle Diaz** | Database Manager | Designed the database structure and schema; managed data organization, storage, and security; ensured accurate data saving, easy retrieval, and integrity of all attendance records. |
-| **Alyssa Jenille Reantaso** | GitHub Manager | Managed the project repository; handled version control, code organization, and file updates; coordinated team collaboration on GitHub and kept all project files properly maintained. |
-| **Ronel Garcia** | Documentation Officer / Debugger | Identified and fixed system errors and bugs during testing; performed quality checks; prepared and organized all project documents, reports, and written requirements for submission and presentation. |
+### Authentication & User Management
+* Register and login with email and password.
+* JWT-based protected routes.
+* Role-based access control for `student`, `teacher`, and `admin`.
+* Admin-only user management endpoints.
+
+### Attendance & Session Tracking
+* Student check-in via `/api/attendance/checkin` and `/api/attendance/checkin-session`.
+* Automatic arrival classification: `Early`, `On-Time`, `Late`, `Absent`.
+* Auto-generated attendance sessions from class schedules.
+* Daily absence detection and auto-marking after scheduled class end.
+* Teacher/admin attendance review, updates, and deletions.
+
+### Class & Roster Management
+* Class creation, listing, update, and deletion.
+* Class schedule save/retrieve capabilities.
+* Student enrollment and roster management.
+* Session listing and session details.
+
+### Frontend Features
+* Responsive landing page with login/register navigation.
+* Student dashboard and summary preview.
+* Teacher dashboard and session management.
+* Admin dashboard and user management pages.
+* Consistent UI built with Bootstrap and custom CSS.
+
+---
+
+## Tech Stack
+* Frontend: HTML, CSS, Bootstrap, Vanilla JavaScript.
+* Backend: Node.js, Express, MongoDB, Mongoose.
+* Security: JWT, Helmet, express-mongo-sanitize, rate limiting.
 
 ---
 
-## System Purpose
-The primary goals of this project are:
-* **Automate** the process of recording attendance.
-* **Reduce** manual errors in tracking student presence.
-* **Classify** attendance status (Early, On-time, Late, Absent) automatically.
-* **Provide** an organized and accessible record for teachers.
+## How to Run Locally
+1. Install dependencies:
+```bash
+cd backend
+npm install
+```
+
+2. Create a `.env` file in `backend/` with at least:
+```env
+MONGODB_URI=your_mongo_connection_string
+JWT_SECRET=your_jwt_secret
+PORT=3000
+```
+
+3. Start the backend server:
+```bash
+npm start
+```
+
+4. Open the app in your browser:
+```text
+http://localhost:3000
+```
+
+> The backend serves the frontend from `frontend/` automatically.
 
 ---
 
-## Key Features
+## API Summary
+### Authentication
+* `POST /api/auth/register` — register a new user
+* `POST /api/auth/login` — login and receive JWT
+* `GET /api/auth/users` — admin/teacher only list users
+* `DELETE /api/auth/users/:id` — admin only delete a user
 
-### 1️⃣ Student Check-In System
-Students can input their unique ID to record their attendance quickly and easily, minimizing classroom disruption.
+### Attendance
+* `POST /api/attendance/checkin` — student check-in (legacy flow)
+* `POST /api/attendance/checkin-session` — student check-in with session/class context
+* `GET /api/attendance/my-attendance` — student attendance history
+* `GET /api/attendance` — teacher/admin attendance list
+* `GET /api/attendance/stats` — teacher/admin today's attendance stats
+* `GET /api/attendance/student-summary` — teacher/admin summary by student
+* `PUT /api/attendance/:id` — admin update attendance record
+* `DELETE /api/attendance/:id` — admin delete attendance record
 
-### 2️⃣ Auto-Time Classification
-The system automatically labels attendance based on predefined time rules:
-* 🟢 **Early**
-* 🔵 **On-Time**
-* 🟡 **Late**
-* 🔴 **Absent**
-
-### 3️⃣ Attendance Records Monitoring
-Teachers can view all attendance records in a clean table format for easy tracking and filtered views.
-
-### 4️⃣ Organized Database Storage
-All data is stored securely in a structured database, ensuring reliability and easy retrieval for future reference.
-
-### 5️⃣ Real-Time Recording
-Attendance is recorded instantly upon submission, ensuring that time-tracking is accurate to the second.
+### Classroom Support
+* `GET /api/classes` — list classes
+* `POST /api/classes` — create classes (admin)
+* `GET /api/schedule` — retrieve class schedules
+* `POST /api/schedule` — save class schedules
+* `GET /api/roster` — list enrolled classes (teacher/admin)
+* `POST /api/roster/enroll` — enroll student (admin)
+* `GET /api/roster/class/:className` — class roster (teacher/admin)
+* `GET /api/sessions` — list attendance sessions
+* `GET /api/sessions/:id` — session details
 
 ---
+
+## Folder Structure
+* `frontend/` — static pages and client-side scripts
+* `backend/` — Express API, models, controllers, middleware
+* `database/` — database route definitions and utilities
+
 ---
 
-## Project Development Timeline
-
-### Week 10 – Project Planning
-In this week our team drafted the project proposal, finalized the system concept, designed the database schema, and assigned specific roles to each member.
-
-### Week 11 – Backend Setup
-The backend server was initialized using Node.js and Express. API routes were created, and MongoDB was connected for database operations.
-
-### Week 12 – Frontend Design
-The system interface was designed using HTML, CSS, and Bootstrap, including the homepage, navigation layout, and basic user interface components.
-
-### Week 13 – Form Submission & Data Insertion
-Attendance forms were developed and integrated with backend APIs to validate and store student attendance records in the database.
-
-### Week 14 – Data Retrieval & Display
-Attendance records were fetched from MongoDB and displayed in dashboard tables for easier monitoring and tracking.
-
-### Week 15 – Update & Delete Functionality
-CRUD operations were completed by implementing edit and delete features for managing attendance records efficiently.
-
-### Week 16 – Final Testing & Documentation
-The team conducted system testing, fixed errors, improved the interface, finalized documentation, and prepared for project presentation and defense.
+## Notes
+* Use the `frontend/` README for a front-end specific setup and page overview.
+* The project currently runs as a full stack application from `backend/server.js`.

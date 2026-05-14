@@ -1,22 +1,23 @@
 const router = require('express').Router();
-const { register, login, getAllUsers } = require('../controllers/authController');
+const { register, login, getAllUsers, deleteUser } = require('../controllers/authController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { registerValidation, loginValidation, handleValidationErrors } = require('../middleware/validation');
 
-router.post('/register', 
-    registerValidation, 
-    handleValidationErrors, 
+router.post('/register',
+    registerValidation,
+    handleValidationErrors,
     register
 );
-router.post('/login', 
-    loginValidation, 
-    handleValidationErrors, 
+router.post('/login',
+    loginValidation,
+    handleValidationErrors,
     login
 );
 router.get('/users', protect, authorize('teacher', 'admin'), getAllUsers);
-router.get('/secure-data', 
-    protect, 
-    authorize('admin'), 
+router.delete('/users/:id', protect, authorize('admin'), deleteUser);
+router.get('/secure-data',
+    protect,
+    authorize('admin'),
     (req, res) => {
         res.json({
             success: true,

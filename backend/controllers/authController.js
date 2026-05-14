@@ -2,9 +2,12 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cache = require('../utils/cache');
+const Attendance = require('../models/Attendance');
 
-const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET || 'your-secret-key', {
+const generateToken = (id, role, studentId) => {
+  const payload = { id, role };
+  if (studentId) payload.studentId = studentId;
+  return jwt.sign(payload, process.env.JWT_SECRET || 'your-secret-key', {
     expiresIn: '30d'
   });
 };
@@ -35,7 +38,7 @@ exports.register = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Registered successfully",
-      token: generateToken(user._id, user.role),
+      token: generateToken(user._id, user.role, user.studentId),
       user: {
         id: user._id,
         username: user.username,
@@ -51,7 +54,7 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body; 
+    const { email, password } = req.body;
 
     const user = await User.findOne({ email });
     if (!user) {
@@ -66,7 +69,7 @@ exports.login = async (req, res) => {
     res.json({
       success: true,
       message: "Login successful",
-      token: generateToken(user._id, user.role),
+      token: generateToken(user._id, user.role, user.studentId),
       user: {
         id: user._id,
         username: user.username,
@@ -106,6 +109,24 @@ exports.getAllUsers = async (req, res) => {
       count: users.length,
       data: users
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    await Attendance.deleteMany({ user: req.params.id });
+    cache.del('users_all');
+    cache.del('attendance_all');
+    cache.del('attendance_student_summary');
+
+    res.json({ success: true, message: 'User deleted and related attendance removed' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

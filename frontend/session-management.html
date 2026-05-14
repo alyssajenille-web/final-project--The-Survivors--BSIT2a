@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Sessions & Roster Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .session-mgmt-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+
+        .tab-btn.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button.danger {
+            background: #e74c3c;
+        }
+
+        button.danger:hover {
+            background: #c0392b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #ecf0f1;
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .badge.open {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .badge.closed {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="session-mgmt-container">
+        <h1>📋 Attendance Session & Roster Management</h1>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'sessions')">Create Session</button>
+            <button class="tab-btn" onclick="switchTab(event, 'roster')">Manage Roster</button>
+            <button class="tab-btn" onclick="switchTab(event, 'sessions-list')">Active Sessions</button>
+        </div>
+
+        <!-- Create Session Tab -->
+        <div id="sessionsTab" class="tab-content active">
+            <h2>Create Attendance Session</h2>
+            <form id="sessionForm">
+                <div class="form-group">
+                    <label for="sessionDate">Session Date *</label>
+                    <input type="date" id="sessionDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="className">Class Name *</label>
+                    <input type="text" id="className" placeholder="e.g., Biology 101" required>
+                </div>
+                <div class="form-group">
+                    <label for="startTime">Start Time (HH:MM) *</label>
+                    <input type="time" id="startTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="endTime">End Time (HH:MM) *</label>
+                    <input type="time" id="endTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="allowanceTime">On-Time Grace Period (minutes)</label>
+                    <input type="number" id="allowanceTime" value="5" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="sessionNotes">Notes</label>
+                    <textarea id="sessionNotes" rows="3" placeholder="Optional notes..."></textarea>
+                </div>
+                <button type="submit">✅ Create Session</button>
+            </form>
+            <div id="sessionMessage"></div>
+        </div>
+
+        <!-- Manage Roster Tab -->
+        <div id="rosterTab" class="tab-content">
+            <h2>Manage Class Roster</h2>
+            <form id="rosterForm">
+                <div class="form-group">
+                    <label for="enrollClassName">Class Name *</label>
+                    <input type="text" id="enrollClassName" placeholder="e.g., Biology 101" required>
+                </div>
+                <div class="form-group">
+                    <label for="enrollStudentId">Student ID *</label>
+                    <input type="text" id="enrollStudentId" placeholder="e.g., 2026-1234-56789" required>
+                </div>
+                <button type="submit">➕ Enroll Student</button>
+            </form>
+            <div id="rosterMessage"></div>
+
+            <h3>View Class Roster</h3>
+            <div class="form-group">
+                <label for="viewClassName">Class Name</label>
+                <input type="text" id="viewClassName" placeholder="e.g., Biology 101">
+                <button onclick="loadRoster()" style="margin-top: 0.5rem;">📋 Load Roster</button>
+            </div>
+            <div id="rosterList"></div>
+        </div>
+
+        <!-- Active Sessions Tab -->
+        <div id="sessionsListTab" class="tab-content">
+            <h2>Active Sessions</h2>
+            <div class="form-group">
+                <label for="filterClassName">Filter by Class Name (optional)</label>
+                <input type="text" id="filterClassName" placeholder="e.g., Biology 101">
+                <button onclick="loadSessions()" style="margin-top: 0.5rem;">🔄 Load Sessions</button>
+            </div>
+            <div id="sessionsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+        if (!token || (user.role !== 'teacher' && user.role !== 'admin')) {
+            alert('Access denied. Teachers and Admins only.');
+            window.location.href = 'login.html';
+        }
+
+        function switchTab(evt, tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Create Session
+        document.getElementById('sessionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('sessionMessage');
+            msg.innerHTML = '';
+
+            const sessionDate = document.getElementById('sessionDate').value;
+            const className = document.getElementById('className').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const allowanceMinutes = parseInt(document.getElementById('allowanceTime').value);
+
+            try {
+                const response = await fetch('/api/sessions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        sessionDate: new Date(sessionDate).toISOString(),
+                        className,
+                        startTime,
+                        endTime,
+                        allowanceMinutes
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    msg.innerHTML = `<div class="alert success">✅ Session created! ID: ${data.data._id}</div>`;
+                    document.getElementById('sessionForm').reset();
+                } else {
+                    msg.innerHTML = `<div class="alert error">❌ ${data.message}</div>`;
+                }
+            } catch (error) {
+                msg.innerHTML = `<div class="alert error">❌ Error: ${error.message}</div>`;
+            }
+        });
+
+        // Enroll Student
+        document.getElementById('rosterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('rosterMessage');
+            msg.innerHTML = '';
+
+            const className = document.getElementById('enrollClassName').value;
+            const studentId = document.getElementById('enrollStudentId').value;
+
+            try {
+                const response = await fetch('/api/roster/enroll', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ className, studentId })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    msg.innerHTML = `<div class="alert success">✅ Student enrolled!</div>`;
+                    document.getElementById('rosterForm').reset();
+                } else {
+                    msg.innerHTML = `<div class="alert error">❌ ${data.message}</div>`;
+                }
+            } catch (error) {
+                msg.innerHTML = `<div class="alert error">❌ Error: ${error.message}</div>`;
+            }
+        });
+
+        // Load Roster
+        async function loadRoster() {
+            const className = document.getElementById('viewClassName').value;
+            const list = document.getElementById('rosterList');
+
+            if (!className) {
+                list.innerHTML = '<div class="alert error">Please enter a class name</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/roster/class/${encodeURIComponent(className)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.data) {
+                    list.innerHTML = `<div class="alert error">❌ ${data.message}</div>`;
+                    return;
+                }
+
+                list.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Enrolled</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(entry => `
+                                <tr>
+                                    <td>${entry.student?.username || 'Unknown'}</td>
+                                    <td>${entry.studentId}</td>
+                                    <td>${new Date(entry.enrolledAt).toLocaleDateString()}</td>
+                                    <td>
+                                        <button class="danger" onclick="unenrollStudent('${entry._id}')">Remove</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                list.innerHTML = `<div class="alert error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Unenroll Student
+        async function unenrollStudent(rosterEntryId) {
+            if (!confirm('Remove this student from the class?')) return;
+
+            try {
+                const response = await fetch(`/api/roster/${rosterEntryId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('✅ Student removed');
+                    loadRoster();
+                } else {
+                    alert(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        // Load Sessions
+        async function loadSessions() {
+            const className = document.getElementById('filterClassName').value;
+            const list = document.getElementById('sessionsList');
+            list.innerHTML = '<div class="alert">Loading...</div>';
+
+            try {
+                let url = '/api/sessions';
+                if (className) url += `?className=${encodeURIComponent(className)}`;
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.data) {
+                    list.innerHTML = `<div class="alert error">❌ ${data.message}</div>`;
+                    return;
+                }
+
+                list.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(session => `
+                                <tr>
+                                    <td>${session.className}</td>
+                                    <td>${new Date(session.sessionDate).toLocaleDateString()}</td>
+                                    <td>${session.startTime} - ${session.endTime}</td>
+                                    <td><span class="badge ${session.status}">${session.status}</span></td>
+                                    <td>
+                                        ${session.status === 'open' ? `
+                                            <button onclick="closeSession('${session._id}')" class="danger">Close & Mark Absences</button>
+                                        ` : 'Closed'}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                list.innerHTML = `<div class="alert error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Close Session
+        async function closeSession(sessionId) {
+            if (!confirm('Close this session and mark all non-checked-in students as absent?')) return;
+
+            try {
+                const response = await fetch(`/api/sessions/${sessionId}/close`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert(`✅ Session closed. ${data.data.absencesCreated} students marked absent.`);
+                    loadSessions();
+                } else {
+                    alert(`❌ ${data.message}`);
+                }
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        // Load sessions on page load
+        loadSessions();
+    </script>
+</body>
+
+</html>

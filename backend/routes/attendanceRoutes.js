@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const {
   checkIn,
+  checkInWithSession,
   getAll,
   getById,
   update,
@@ -12,6 +13,12 @@ const {
 
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { checkInValidation, handleValidationErrors } = require('../middleware/validation');
+
+router.post('/checkin-session',
+  protect,
+  authorize('student'),
+  checkInWithSession
+);
 
 router.post('/checkin',
   protect,

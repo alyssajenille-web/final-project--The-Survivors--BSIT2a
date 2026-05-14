@@ -1,63 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Smart Attendance</title>
-    <link rel="stylesheet" href="css/admin-dashboard.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
-        .navbar { background: #2c3e50; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .navbar h1 { font-size: 1.5rem; }
-        .user-info { display: flex; align-items: center; gap: 1rem; }
-        .btn { padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
-        .btn-danger { background: #e74c3c; color: white; }
-        .btn-danger:hover { background: #c0392b; }
-        .btn-warning { background: #f39c12; color: white; }
-        .btn-warning:hover { background: #e67e22; }
-        .btn-success { background: #27ae60; color: white; }
-        .btn-success:hover { background: #229954; }
-        .container { max-width: 1400px; margin: 2rem auto; padding: 0 1rem; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        .stat-card h3 { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 0.5rem; text-transform: uppercase; }
-        .stat-card .number { font-size: 2rem; font-weight: bold; }
-        .stat-card.early .number { color: #27ae60; }
-        .stat-card.ontime .number { color: #3498db; }
-        .stat-card.late .number { color: #f39c12; }
-        .stat-card.absent .number { color: #e74c3c; }
-        .stat-card.users .number { color: #9b59b6; }
-        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem; }
-        .card h2 { margin-bottom: 1.5rem; color: #2c3e50; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #ecf0f1; }
-        th { background: #34495e; color: white; font-weight: 600; }
-        tr:hover { background: #f8f9fa; }
-        .badge { padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
-        .badge-primary { background: #cce5ff; color: #004085; }
-        .badge-success { background: #d4edda; color: #155724; }
-        .badge-danger { background: #f8d7da; color: #721c24; }
-        .badge-secondary { background: #e2e3e5; color: #383d41; }
-        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.85rem; margin-right: 0.5rem; }
-        .text-center { text-align: center; }
-        .text-danger { color: #e74c3c; }
-        .loading { padding: 2rem; text-align: center; color: #7f8c8d; }
-        .section-title { color: #2c3e50; margin: 2rem 0 1rem; font-size: 1.5rem; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <nav class="navbar">
-        <h1>⚙️ Smart Attendance - Admin Dashboard</h1>
+        <div class="d-flex align-items-center">
+            <i class="fas fa-cog me-2"></i>
+            <h1>⚙️ Smart Attendance - Admin Dashboard</h1>
+        </div>
         <div class="user-info">
             <span>Welcome, <strong id="adminName">Admin</strong></span>
-            <button id="logoutBtn" class="btn btn-danger">Logout</button>
+            <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-user-circle me-1"></i>Menu
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i>Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" id="logoutBtn" href="#"><i
+                                class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <div class="container">
-        <!-- Attendance Stats -->
-        <div class="stats-grid">
+    <div class="container mt-4">
+        <div class="stats-grid mb-4">
             <div class="stat-card early">
                 <h3>Early Today</h3>
                 <div class="number" id="statEarly">0</div>
@@ -80,8 +58,7 @@
             </div>
         </div>
 
-        <!-- User Stats -->
-        <div class="stats-grid">
+        <div class="stats-grid mb-4">
             <div class="stat-card users">
                 <h3>Total Users</h3>
                 <div class="number" id="statTotalUsers">0</div>
@@ -96,10 +73,143 @@
             </div>
         </div>
 
-        <!-- Users Management -->
+        <h2 class="section-title">Class Schedule Management</h2>
+        <div class="card mb-4">
+            <div class="row">
+                <div class="col-md-4 border-end">
+                    <h4 class="mb-3">Add Class Schedule</h4>
+                    <form id="classForm">
+                        <div class="mb-3">
+                            <label class="form-label">Class Name</label>
+                            <input type="text" id="classNameInput" class="form-control" placeholder="e.g. IT 112"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Section</label>
+                            <input type="text" id="classSectionInput" class="form-control" placeholder="e.g. BSIT 2A">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Subject</label>
+                            <input type="text" id="classSubjectInput" class="form-control"
+                                placeholder="e.g. Web Systems">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teacher</label>
+                            <select id="classTeacherSelect" class="form-select" required>
+                                <option value="">Loading teachers...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Days</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <label class="form-check-label"><input class="form-check-input schedule-day me-1"
+                                        type="checkbox" value="1">Mon</label>
+                                <label class="form-check-label"><input class="form-check-input schedule-day me-1"
+                                        type="checkbox" value="2">Tue</label>
+                                <label class="form-check-label"><input class="form-check-input schedule-day me-1"
+                                        type="checkbox" value="3">Wed</label>
+                                <label class="form-check-label"><input class="form-check-input schedule-day me-1"
+                                        type="checkbox" value="4">Thu</label>
+                                <label class="form-check-label"><input class="form-check-input schedule-day me-1"
+                                        type="checkbox" value="5">Fri</label>
+                                <label class="form-check-label"><input class="form-check-input schedule-day me-1"
+                                        type="checkbox" value="6">Sat</label>
+                                <label class="form-check-label"><input class="form-check-input schedule-day me-1"
+                                        type="checkbox" value="0">Sun</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Start Time</label>
+                                <input type="time" id="classStartTimeInput" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">End Time</label>
+                                <input type="time" id="classEndTimeInput" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Grace Period (mins)</label>
+                            <input type="number" id="classAllowanceInput" class="form-control" value="5" min="0"
+                                max="60" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add Schedule</button>
+                    </form>
+                </div>
+
+                <div class="col-md-8">
+                    <h4 class="mb-3">Class Schedules</h4>
+                    <div class="table-responsive" style="max-height: 260px; overflow-y: auto;">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th>Class</th>
+                                    <th>Subject</th>
+                                    <th>Teacher</th>
+                                    <th>Days</th>
+                                    <th>Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classesTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center loading">Loading schedules...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Class Roster Management</h2>
+        <div class="card mb-4">
+            <div class="row">
+                <div class="col-md-4 border-end">
+                    <h4 class="mb-3">Enroll Student to Class</h4>
+                    <form id="enrollForm">
+                        <div class="mb-3">
+                            <label class="form-label">Student ID</label>
+                            <input type="text" id="enrollStudentId" class="form-control" placeholder="e.g. 2026-1234"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Class</label>
+                            <select id="enrollClassSelect" class="form-select" required>
+                                <option value="">Create a class first</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus-circle me-1"></i>
+                            Enroll Student</button>
+                    </form>
+                </div>
+
+                <div class="col-md-8">
+                    <h4 class="mb-3">Current Enrollments</h4>
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th>Class Name</th>
+                                    <th>Student ID</th>
+                                    <th>Student Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rosterTableBody">
+                                <tr>
+                                    <td colspan="4" class="text-center loading">Loading roster...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <h2 class="section-title">👥 User Management</h2>
-        <div class="card">
-            <table>
+        <div class="card mb-4">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -117,31 +227,10 @@
             </table>
         </div>
 
-        <!-- Attendance Management -->
-        <h2 class="section-title">📋 Attendance Management</h2>
-        <div class="card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Student</th>
-                        <th>ID</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                        <th>Subject</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="attendanceTableBody">
-                    <tr>
-                        <td colspan="7" class="text-center loading">Loading attendance records...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
 
-    <script src="js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/admin-dashboard.js"></script>
 </body>
+
 </html>
