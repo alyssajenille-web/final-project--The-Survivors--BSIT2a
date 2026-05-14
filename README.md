@@ -7,12 +7,7 @@
 
 ---
 
-<!-- 📌 SYSTEM PREVIEW IMAGE - add your image file first -->
-<p align="center">
-  <img src="assets/system-preview.png" alt="Smart Attendance System Interface Preview" width="850">
-</p>
 
----
 
 ## Live Deployment URL
 [Click here to access the system]()  
