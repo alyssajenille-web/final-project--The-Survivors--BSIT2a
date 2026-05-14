@@ -2,6 +2,10 @@
 # Smart Attendance System with Auto-Time Classification
 
 <p align="center">
+  <img src="frontend/css/img/logo.jpg" alt="Logo" width="200" height="auto">
+</p>
+
+<p align="center">
   <strong>Efficient • Accurate • Automated</strong>
 </p>
 
@@ -29,7 +33,7 @@ It includes:
 
 ### Attendance & Session Tracking
 * Student check-in via `/api/attendance/checkin` and `/api/attendance/checkin-session`.
-* Automatic arrival classification: `Early`, `On-Time`, `Late`, `Absent`.
+* Automatic arrival classification: `On-Time`, `Late`, `Absent`.
 * Auto-generated attendance sessions from class schedules.
 * Daily absence detection and auto-marking after scheduled class end.
 * Teacher/admin attendance review, updates, and deletions.
@@ -53,6 +57,11 @@ It includes:
 * Frontend: HTML, CSS, Bootstrap, Vanilla JavaScript.
 * Backend: Node.js, Express, MongoDB, Mongoose.
 * Security: JWT, Helmet, express-mongo-sanitize, rate limiting.
+
+---
+
+## Live Deployment
+🚀 **[View Live Application](https://final-project-the-survivors-bsit2a-6cdr.onrender.com)**
 
 ---
 
@@ -118,6 +127,27 @@ http://localhost:3000
 * `frontend/` — static pages and client-side scripts
 * `backend/` — Express API, models, controllers, middleware
 * `database/` — database route definitions and utilities
+
+---
+
+## Team Members & Roles
+
+| Name | Role | Responsibilities |
+|------|------|-----------------|
+| Jexson Sedon | Project Manager | Project workflow management and team coordination |
+| Judy Pearl Balictar | Frontend Manager | Frontend development, form validation, API integration |
+| John Roan Ballester | Backend Manager | Backend routes, API development, debugging |
+| Michelle Diaz | Database Manager | MongoDB database management and verification |
+| Alyssa Jenille Reantaso | GitHub Manager | Version control, branch management, collaboration |
+| Ronel Garcia | Documentation Officer / Debugger | Project documentation, debugging, problem-solving |
+
+### Team Learning Outcomes
+* **Project Management** — Improved teamwork and coordination skills through efficient workflow management
+* **Frontend Development** — Mastered connecting frontend forms to backend APIs using JavaScript fetch()
+* **Backend Development** — Deepened understanding of routes, request processing, and MongoDB integration
+* **Database Management** — Gained expertise in MongoDB data storage and verification using MongoDB Atlas
+* **Version Control** — Strengthened collaboration and version control skills through organized GitHub practices
+* **Documentation & Debugging** — Enhanced problem-solving abilities through thorough documentation and systematic debugging
 
 ---
 
