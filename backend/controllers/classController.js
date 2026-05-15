@@ -187,18 +187,32 @@ exports.updateClass = async (req, res) => {
 
 exports.deleteClass = async (req, res) => {
   try {
-    const classDoc = await Class.findByIdAndUpdate(
-      req.params.id,
-      { isActive: false },
-      { new: true }
-    );
+    const classDoc = await Class.findById(req.params.id);
 
     if (!classDoc) {
       return res.status(404).json({ success: false, message: 'Class not found' });
     }
 
+    const className = buildClassName(classDoc);
+    const rosterResult = await ClassRoster.deleteMany({
+      $or: [
+        { class: classDoc._id },
+        { className }
+      ]
+    });
+    await classDoc.deleteOne();
+
     cache.del('classes_all');
-    res.json({ success: true, message: 'Class archived successfully', data: classDoc });
+    cache.del(`roster_${className}`);
+
+    res.json({
+      success: true,
+      message: 'Class schedule deleted successfully',
+      data: {
+        deletedClassId: classDoc._id,
+        deletedEnrollments: rosterResult.deletedCount
+      }
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

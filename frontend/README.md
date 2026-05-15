@@ -3,6 +3,7 @@
 ## Overview
 This frontend is a static web interface for the Smart Attendance System.
 It is served by the backend and uses Bootstrap, custom CSS, and JavaScript to manage authentication, attendance workflows, and user dashboards.
+It also includes Progressive Web App support through a manifest, app icons, and a service worker.
 
 ---
 
@@ -28,6 +29,29 @@ It is served by the backend and uses Bootstrap, custom CSS, and JavaScript to ma
 * `js/login.js` — login page behavior.
 * `js/register.js` — registration page behavior.
 * `js/student-dashboard.js` — student dashboard features.
+* `js/teacher-dashboard.js` — teacher dashboard records, filters, stats, and student summaries.
+* `js/admin-dashboard.js` — admin dashboard class, roster, user, and stats management.
+* `js/pwa.js` — service worker registration.
+* `manifest.json` — PWA install metadata.
+* `sw.js` — service worker for static asset caching.
+* `icons/` — generated PWA app icons.
+
+---
+
+## Current UI Behavior
+* Admin class creation only shows users with the `teacher` role in the teacher dropdown.
+* Dashboard stats no longer show a separate Early card.
+* Teacher and student dashboards hide old `Excused` records from visible dashboard tables.
+* User Management is horizontally scrollable on very small screens.
+* The homepage navbar is compact, responsive, and uses Bootstrap's mobile collapse behavior.
+
+---
+
+## PWA Support
+* The app can be installed from supported browsers when served over HTTPS, such as on Render.
+* The service worker is registered from `/sw.js`, giving it root scope for the frontend.
+* Static frontend files are cached for repeat visits and basic offline loading.
+* API requests under `/api` are not cached so attendance data remains current.
 
 ---
 
