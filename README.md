@@ -117,7 +117,7 @@ It includes:
 
 ## Live Deployment
 
-🚀 **[View Live Application](https://final-project-the-survivors-bsit2a-6cdr.onrender.com)**
+🚀 **[View Live Application](https://final-project-the-survivors-bsit2a-1.onrender.com)**
 
 ---
 
