@@ -8,6 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
 </head>
 
 <body>
@@ -36,10 +39,6 @@
 
     <div class="container mt-4">
         <div class="stats-grid mb-4">
-            <div class="stat-card early">
-                <h3>Early Today</h3>
-                <div class="number" id="statEarly">0</div>
-            </div>
             <div class="stat-card ontime">
                 <h3>On-Time Today</h3>
                 <div class="number" id="statOnTime">0</div>
@@ -87,7 +86,6 @@
                         <option value="Present">Present</option>
                         <option value="Late">Late</option>
                         <option value="Absent">Absent</option>
-                        <option value="Excused">Excused</option>
                     </select>
                 </div>
                 <table class="table mt-3">
@@ -115,15 +113,14 @@
         <div id="studentsTab" class="tab-content">
             <div class="card">
                 <h2>👥 Student Activity Summary</h2>
-                <p style="color: #7f8c8d; margin-bottom: 1rem;">View each student's attendance breakdown: Early, Late,
-                    and Absent counts</p>
+                <p style="color: #7f8c8d; margin-bottom: 1rem;">View each student's attendance breakdown: Late and
+                    Absent counts</p>
                 <div class="filters">
                     <input type="text" id="studentSearchInput" placeholder="🔍 Search student by name or ID...">
                     <select id="sortFilter">
                         <option value="name">Sort by Name</option>
                         <option value="absent">Sort by Most Absent</option>
                         <option value="late">Sort by Most Late</option>
-                        <option value="early">Sort by Most Early</option>
                     </select>
                 </div>
                 <div id="studentSummaryGrid" class="student-summary-grid mt-3">
@@ -136,6 +133,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/teacher-dashboard.js"></script>
+    <script src="js/pwa.js"></script>
 </body>
 
 </html>

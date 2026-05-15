@@ -46,8 +46,10 @@ http://localhost:3000
 * Student session-based and legacy check-in flows
 * Auto-time attendance classification with daily absence handling
 * Class, schedule, and roster management
+* Class deletion with related roster enrollment cleanup
 * Attendance statistics and student summaries
 * Admin user management and deletion cleanup
+* Static frontend and PWA asset serving from `../frontend`
 
 ---
 
@@ -76,7 +78,7 @@ http://localhost:3000
 * `POST /api/classes` — create class (`admin` only)
 * `GET /api/classes/:id` — get class details (`teacher`, `admin` only)
 * `PUT /api/classes/:id` — update class (`admin` only)
-* `DELETE /api/classes/:id` — delete class (`admin` only)
+* `DELETE /api/classes/:id` — delete class and related roster enrollments (`admin` only)
 * `GET /api/schedule` — retrieve class schedule
 * `POST /api/schedule` — save class schedule (`teacher`, `admin` only)
 * `GET /api/sessions` — list attendance sessions
@@ -111,3 +113,5 @@ http://localhost:3000
 ## Notes
 * The server serves static frontend files from `../frontend`
 * API and frontend are integrated so routing continues to the SPA-like pages
+* PWA files are served from the frontend root: `/manifest.json`, `/sw.js`, and `/icons/*`
+* API responses under `/api` are intentionally not cached by the service worker

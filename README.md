@@ -21,6 +21,7 @@ It includes:
 - Teacher and admin dashboards for attendance monitoring and summaries.
 - Class roster, class schedule, and session management.
 - Real-time attendance status updates backed by MongoDB.
+- Progressive Web App support for installable desktop/mobile use.
 
 ---
 
@@ -40,12 +41,15 @@ It includes:
 - Auto-generated attendance sessions from class schedules.
 - Daily absence detection and auto-marking after scheduled class end.
 - Teacher/admin attendance review, updates, and deletions.
+- Dashboard summaries focus on `On-Time`, `Late`, `Absent`, `Present`, and totals.
 
 ### Class & Roster Management
 
 - Class creation, listing, update, and deletion.
+- Class deletion removes the class schedule from the database and cleans up related roster enrollments.
 - Class schedule save/retrieve capabilities.
 - Student enrollment and roster management.
+- Admin class assignment only lists teacher accounts in the teacher selector.
 - Session listing and session details.
 
 ### Frontend Features
@@ -55,6 +59,15 @@ It includes:
 - Teacher dashboard and session management.
 - Admin dashboard and user management pages.
 - Consistent UI built with Bootstrap and custom CSS.
+- Responsive mobile tables, including horizontally scrollable user management.
+- Installable PWA setup with `manifest.json`, app icons, and a root service worker.
+
+### Progressive Web App
+
+- `frontend/manifest.json` defines the app name, theme color, display mode, and icons.
+- `frontend/sw.js` caches static pages, scripts, styles, and icons for faster repeat loads.
+- `frontend/js/pwa.js` registers the service worker on all frontend pages.
+- API requests under `/api` are not cached so attendance data stays live.
 
 ---
 
@@ -98,6 +111,7 @@ It includes:
 - Frontend: HTML, CSS, Bootstrap, Vanilla JavaScript.
 - Backend: Node.js, Express, MongoDB, Mongoose.
 - Security: JWT, Helmet, express-mongo-sanitize, rate limiting.
+- PWA: Web App Manifest, Service Worker, installable app icons.
 
 ---
 
@@ -164,6 +178,8 @@ http://localhost:3000
 
 - `GET /api/classes` — list classes
 - `POST /api/classes` — create classes (admin)
+- `PUT /api/classes/:id` — update class (admin)
+- `DELETE /api/classes/:id` — delete class and related roster enrollments (admin)
 - `GET /api/schedule` — retrieve class schedules
 - `POST /api/schedule` — save class schedules
 - `GET /api/roster` — list enrolled classes (teacher/admin)
@@ -176,7 +192,7 @@ http://localhost:3000
 
 ## Folder Structure
 
-- `frontend/` — static pages and client-side scripts
+- `frontend/` — static pages, client-side scripts, PWA manifest, service worker, and icons
 - `backend/` — Express API, models, controllers, middleware
 - `database/` — database route definitions and utilities
 

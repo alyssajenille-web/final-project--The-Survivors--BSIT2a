@@ -179,19 +179,24 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    tableBody.innerHTML = records.map(record => {
+    const visibleRecords = records.filter(record => record.status !== 'Excused');
+
+    if (!visibleRecords.length) {
+      tableBody.innerHTML = '<tr><td colspan="8" class="text-center">No attendance records match the filters</td></tr>';
+      return;
+    }
+
+    tableBody.innerHTML = visibleRecords.map(record => {
       const date = new Date(record.timeIn).toLocaleDateString();
       const time = record.markedByAdmin && record.status === 'Absent' ? '--:--' : new Date(record.timeIn).toLocaleTimeString();
       const schedule = getRecordSchedule(record);
+      const displayStatus = record.status === 'Early' ? 'Present' : record.status;
 
       let statusClass = 'badge-secondary';
-      if (record.status === 'Present') statusClass = 'bg-success';
-      if (record.status === 'Early') statusClass = 'bg-success';
-      if (record.status === 'On-Time') statusClass = 'bg-primary';
-      if (record.status === 'Late') statusClass = 'bg-warning text-dark';
-      if (record.status === 'Absent') statusClass = 'bg-danger';
-      if (record.status === 'Excused') statusClass = 'bg-info text-dark';
-
+      if (displayStatus === 'Present') statusClass = 'bg-success';
+      if (displayStatus === 'On-Time') statusClass = 'bg-primary';
+      if (displayStatus === 'Late') statusClass = 'bg-warning text-dark';
+      if (displayStatus === 'Absent') statusClass = 'bg-danger';
       const studentName = record.user?.username || record.studentId || 'Unknown';
       const autoTag = record.markedByAdmin ? ' <small class="text-white-50">(Auto)</small>' : '';
 
@@ -203,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <td>${schedule.dayLabel}<br><small class="text-muted">${schedule.timeLabel}</small></td>
           <td>${date}</td>
           <td>${time}</td>
-          <td><span class="badge ${statusClass}">${record.status}${autoTag}</span></td>
+          <td><span class="badge ${statusClass}">${displayStatus}${autoTag}</span></td>
           <td>
             <button class="btn btn-sm btn-info" onclick="viewDetails('${record._id}')">View</button>
           </td>
@@ -280,7 +285,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const data = await response.json();
       if (!data.data) return;
 
-      document.getElementById('statEarly').textContent = data.data.today.Early || 0;
       document.getElementById('statOnTime').textContent = data.data.today['On-Time'] || 0;
       document.getElementById('statLate').textContent = data.data.today.Late || 0;
       document.getElementById('statAbsent').textContent = data.data.today.Absent || 0;
@@ -319,21 +323,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Using the same rendering logic you previously had
     grid.innerHTML = students.map(student => {
-      const total = student.total || 1;
-      const earlyPct = ((student.Early / total) * 100).toFixed(1);
-      const absentPct = ((student.Absent / total) * 100).toFixed(1);
-
       return `
         <div class="student-card p-3 border rounded mb-2">
           <h4>${student.studentName}</h4>
           <div class="text-muted">ID: ${student.studentId}</div>
           <div class="mt-2">
-            <span class="badge bg-success">Early: ${student.Early}</span>
             <span class="badge bg-success">Present: ${student.Present || 0}</span>
             <span class="badge bg-primary">On-Time: ${student['On-Time']}</span>
             <span class="badge bg-warning text-dark">Late: ${student.Late}</span>
             <span class="badge bg-danger">Absent: ${student.Absent}</span>
-            <span class="badge bg-info text-dark">Excused: ${student.Excused || 0}</span>
           </div>
         </div>
       `;

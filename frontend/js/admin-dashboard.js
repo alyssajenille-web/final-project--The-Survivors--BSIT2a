@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const teacherSelect = document.getElementById('classTeacherSelect');
     if (!teacherSelect) return;
 
-    const teachers = cachedUsers.filter(u => u.role === 'teacher' || u.role === 'admin');
+    const teachers = cachedUsers.filter(u => u.role === 'teacher');
     teacherSelect.innerHTML = teachers.length
       ? '<option value="">Select teacher</option>' + teachers.map(t => `<option value="${t._id}">${t.username}</option>`).join('')
       : '<option value="">No teacher accounts found</option>';
@@ -347,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const usersData = await usersRes.json();
 
       if (attendanceData.data) {
-        document.getElementById('statEarly').textContent = attendanceData.data.today.Early || 0;
         document.getElementById('statOnTime').textContent = attendanceData.data.today['On-Time'] || 0;
         document.getElementById('statLate').textContent = attendanceData.data.today.Late || 0;
         document.getElementById('statAbsent').textContent = attendanceData.data.today.Absent || 0;

@@ -204,23 +204,28 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      tableBody.innerHTML = data.data.map(record => {
+      const visibleRecords = data.data.filter(record => record.status !== 'Excused');
+
+      if (visibleRecords.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No attendance records yet</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = visibleRecords.map(record => {
         const date = new Date(record.timeIn).toLocaleDateString();
         const time = new Date(record.timeIn).toLocaleTimeString();
+        const displayStatus = record.status === 'Early' ? 'Present' : record.status;
 
         let badgeColor = 'bg-secondary';
-        if (record.status === 'Present') badgeColor = 'bg-success';
-        if (record.status === 'Early') badgeColor = 'bg-success';
-        if (record.status === 'On-Time') badgeColor = 'bg-primary';
-        if (record.status === 'Late') badgeColor = 'bg-warning text-dark';
-        if (record.status === 'Absent') badgeColor = 'bg-danger';
-        if (record.status === 'Excused') badgeColor = 'bg-info text-dark';
-
+        if (displayStatus === 'Present') badgeColor = 'bg-success';
+        if (displayStatus === 'On-Time') badgeColor = 'bg-primary';
+        if (displayStatus === 'Late') badgeColor = 'bg-warning text-dark';
+        if (displayStatus === 'Absent') badgeColor = 'bg-danger';
         return `
           <tr>
             <td>${date}</td>
             <td>${time}</td>
-            <td><span class="badge ${badgeColor}">${record.status}</span>${record.arrivalType && record.arrivalType !== 'None' ? `<div class="small text-muted">${record.arrivalType}</div>` : ''}</td>
+            <td><span class="badge ${badgeColor}">${displayStatus}</span></td>
             <td>${record.subject || 'General'}</td>
           </tr>
         `;
@@ -241,19 +246,20 @@ document.addEventListener('DOMContentLoaded', function () {
       const data = await response.json();
       if (!data.data) return;
 
-      const stats = { 'Early': 0, 'On-Time': 0, 'Late': 0, 'Absent': 0 };
+      const stats = { 'On-Time': 0, 'Late': 0, 'Absent': 0 };
 
-      data.data.forEach(record => {
+      const visibleRecords = data.data.filter(record => record.status !== 'Excused');
+
+      visibleRecords.forEach(record => {
         if (stats[record.status] !== undefined) {
           stats[record.status]++;
         }
       });
 
-      document.getElementById('statEarly').textContent = stats['Early'];
       document.getElementById('statOnTime').textContent = stats['On-Time'];
       document.getElementById('statLate').textContent = stats['Late'];
       document.getElementById('statAbsent').textContent = stats['Absent'];
-      document.getElementById('statTotal').textContent = data.data.length;
+      document.getElementById('statTotal').textContent = visibleRecords.length;
 
     } catch (error) {
       console.error('Error loading stats:', error);
